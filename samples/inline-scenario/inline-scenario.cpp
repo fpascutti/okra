@@ -4,6 +4,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <memory>
+#include <string>
 #include <gtest/gtest.h>
 #include <okra/scenario.h>
 
@@ -14,6 +15,13 @@ class framework
 public:
     bool has_failed() const { return testing::Test::HasFatalFailure(); }
 
+public:
+    void undefined_step(const okra::step& s)
+    {
+        FAIL() << "No implementation found for step '" << s.text() << "'.";
+    }
+
+public:
     void before_scenario(const okra::scenario& s)
     {
         current_scenario_ = make_scoped_trace(__FILE__, __LINE__, s.name().c_str());
@@ -28,7 +36,6 @@ public:
     }
     void after_step(const okra::step&)
     {
-        FAIL() << "fake error";
         current_step_.reset();
     }
 
@@ -44,7 +51,11 @@ private:
 };
 framework framework__;
 
-struct registry {};
+struct registry
+{
+    typedef void(*fn_ptr)(const std::string&, framework&);
+    const fn_ptr find_impl(const std::string&) const { return nullptr; }
+};
 registry registry__;
 
 }

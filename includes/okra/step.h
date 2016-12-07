@@ -32,6 +32,11 @@ public:
     void operator()(Framework& fw, const Registry& reg, Args&&... args) const
     {
         framework_scope<Framework> scope(fw, *this);
+        auto impl = reg.find_impl(text());
+        if(impl != nullptr)
+            (*impl)(text(), fw, std::forward<Args>(args)...);
+        else
+            fw.undefined_step(*this);
     }
 
 private:
