@@ -13,14 +13,24 @@ class OkraTests(conans.ConanFile):
     license = "Boost Software License 1.0"
     author = "Franck Pascutti"
 
+    settings = {"os", "arch", "compiler", "build_type"}
+    generators = ["cmake"]
+
+    options = {
+        "use_boost_regex": [True, False],
+    }
+    default_options = (
+        "use_boost_regex=False",
+        "gtest:shared=False", # mock objects do not properly return errors with the shared version of googletest
+    )
+
     requires = (
         ("gtest/1.8.0@eliaskousk/stable", "private"),
     )
-    default_options = (
-        "gtest:shared=False", # mock objects do not properly return errors with the shared version of googletest
-    )
-    settings = {"os", "arch", "compiler", "build_type"}
-    generators = ["cmake"]
+
+    def requirements(self):
+        if self.options.use_boost_regex:
+            self.requires("Boost/1.61.0@eliaskousk/stable")
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")
@@ -30,6 +40,7 @@ class OkraTests(conans.ConanFile):
         cmake = conans.CMake(self.settings)
 
         args = ["-DOKRA_BUILD_TESTS=ON"]
+        args.append("-DOKRA_CONFIG_USEBOOSTREGEX=%s" % ("ON" if self.options.use_boost_regex else "OFF"))
         if cmake.is_multi_configuration:
             args.append("-DCMAKE_CONFIGURATION_TYPES=\"%s\"" % (self.settings.build_type))
 

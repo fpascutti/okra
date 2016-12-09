@@ -9,8 +9,11 @@ project(okra CXX)
 option(OKRA_BUILD_TESTS "Build Okra's tests." OFF)
 option(OKRA_BUILD_SAMPLES "Build Okra's samples." OFF)
 
+option(OKRA_CONFIG_USEBOOSTREGEX "Use Boost for regular expressions." OFF)
+
 function(okra_library name)
     add_library(${name} INTERFACE)
+
     target_compile_features(${name} INTERFACE
         cxx_auto_type
         cxx_rvalue_references
@@ -19,6 +22,13 @@ function(okra_library name)
     target_include_directories(${name} INTERFACE
         ${CMAKE_SOURCE_DIR}/includes
     )
+
+    if(OKRA_CONFIG_USEBOOSTREGEX)
+        target_compile_definitions(${name} INTERFACE
+            "OKRA_CONFIG_USEBOOSTREGEX=1"
+        )
+    endif()
+
 endfunction()
 
 okra_library(okra
@@ -26,6 +36,7 @@ okra_library(okra
     includes/okra/compiler_detection.h
     includes/okra/config.h
     includes/okra/export.h
+    includes/okra/re.h
     includes/okra/scenario.h
     includes/okra/step.h
 )

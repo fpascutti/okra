@@ -13,7 +13,13 @@ class Okra(conans.ConanFile):
     license = "Boost Software License 1.0"
     author = "Franck Pascutti"
 
-    settings = None
+    settings = {"os", "arch", "compiler", "build_type"}
+    options = {
+        "use_boost_regex": [True, False],
+    }
+    default_options = (
+        "use_boost_regex=False",
+    )
 
     exports = (
         "includes/*",
@@ -21,13 +27,26 @@ class Okra(conans.ConanFile):
         "LICENSE_1_0.txt",
     )
 
+    def config_options(self):
+        if not self.options.use_boost_regex:
+            self.settings.clear()
+
+    def requirements(self):
+        if self.options.use_boost_regex:
+            self.requires("Boost/1.61.0@eliaskousk/stable")
+
     def build(self):
         # only run CMake to generate the `compiler_detection.h` file
         # no need for a specific generator as the
         # `write_compiler_detection_header` function does not use it
         args = ["-DOKRA_BUILD_TESTS=OFF", "-DOKRA_BUILD_SAMPLES=OFF"]
+        args.append("-DOKRA_CONFIG_USEBOOSTREGEX=%s" % ("ON" if self.options.use_boost_regex else "OFF"))
         self.run("cmake \"%s\" %s" % (self.conanfile_directory, " ".join(args)))
 
     def package(self):
         self.copy("LICENSE_1_0.txt", keep_path=False)
         self.copy("*.h", dst="include", src="includes", keep_path=True)
+
+    def package_info(self):
+        if self.options.use_boost_regex:
+            self.cpp_info.defines.append("OKRA_CONFIG_USEBOOSTREGEX=1")
