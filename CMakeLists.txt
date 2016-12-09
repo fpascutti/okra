@@ -24,6 +24,7 @@ function(okra_library name)
 endfunction()
 
 okra_library(okra
+    includes/okra/detail/function_traits.h
     includes/okra/compiler_detection.h
     includes/okra/config.h
     includes/okra/export.h
@@ -50,6 +51,7 @@ endfunction()
 if(OKRA_BUILD_TESTS)
     enable_testing()
     okra_test(unit-tests
+        tests/unit-tests/detail/function_traits.cpp
         tests/unit-tests/scenario.cpp
         tests/unit-tests/step.cpp
     )
