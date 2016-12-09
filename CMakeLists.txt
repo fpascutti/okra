@@ -32,9 +32,11 @@ function(okra_library name)
 endfunction()
 
 okra_library(okra
+    includes/okra/detail/find_and_call.h
     includes/okra/detail/function_traits.h
     includes/okra/detail/implementation.h
     includes/okra/detail/invoke.h
+    includes/okra/detail/typed_registry.h
     includes/okra/compiler_detection.h
     includes/okra/config.h
     includes/okra/export.h
