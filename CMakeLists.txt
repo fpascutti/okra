@@ -33,10 +33,12 @@ endfunction()
 
 okra_library(okra
     includes/okra/detail/function_traits.h
+    includes/okra/detail/implementation.h
     includes/okra/detail/invoke.h
     includes/okra/compiler_detection.h
     includes/okra/config.h
     includes/okra/export.h
+    includes/okra/impl.h
     includes/okra/re.h
     includes/okra/scenario.h
     includes/okra/step.h

@@ -17,6 +17,7 @@ struct invokable
     { return this->call_op(n, d, s0, s1); }
     MOCK_CONST_METHOD4(call_op, void(int, double&, const std::string&, const std::string&));
 };
+
 }
 
 TEST(invoke, exact_number_of_matches)
@@ -53,9 +54,9 @@ TEST(invoke, too_many_matches)
 {
     double d = 3.14;
 
-    std::string input("Given I wake up in the morning, happy");
+    std::string input("Given I wake up in the morning happy");
     okra::re::smatch matches;
-    auto match_success = okra::re::regex_match(input, matches, okra::re::regex("Given I (.*) up in the (.*), (.*)"));
+    auto match_success = okra::re::regex_match(input, matches, okra::re::regex("Given I (.*) up in the (.*) (.*)"));
     ASSERT_TRUE(match_success) << "Regular expression match should have succeeded.";
 
     testing::StrictMock<invokable> fn;
