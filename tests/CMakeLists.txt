@@ -23,6 +23,7 @@ endfunction()
 
 okra_test(unit-tests
     unit-tests/detail/function_traits.cpp
+    unit-tests/detail/invoke.cpp
     unit-tests/scenario.cpp
     unit-tests/step.cpp
 )
