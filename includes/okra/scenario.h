@@ -53,7 +53,7 @@ public:
     }
 
     template<typename Framework, typename Registry, typename... Args>
-    void operator()(Framework& fw, const Registry& reg, Args&... args) const
+    void operator()(Framework& fw, const Registry& reg, Args&&... args) const
     {
         framework_scope<Framework> scope(fw, *this);
         auto end = steps_.end();

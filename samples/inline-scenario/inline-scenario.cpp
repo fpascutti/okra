@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 #include <gtest/gtest.h>
+#include <okra/impl.h>
+#include <okra/re.h>
 #include <okra/scenario.h>
 
 namespace {
@@ -51,13 +53,14 @@ private:
 };
 framework framework__;
 
-struct registry
+unsigned long long factorial(unsigned long long)
 {
-    typedef void(*fn_ptr)(const std::string&, framework&);
-    const fn_ptr find_impl(const std::string&) const { return nullptr; }
-};
-registry registry__;
+    return 1ull;
+}
 
+auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), [](framework&, unsigned long long& input, unsigned long long, const std::string& arg) { input = std::stoull(arg); })
+                | okra::impl(okra::re::regex("When I compute its factorial"), [](framework&, unsigned long long input, unsigned long long& result) { result = factorial(input); })
+                | okra::impl(okra::re::regex("Then I see the number (\\d+)"), [](framework&, unsigned long long input, unsigned long long result, const std::string& arg) { auto exp = std::stoull(arg); ASSERT_EQ(exp, result) << "Invalid factorial computed for '" << input << "'."; });
 }
 
 TEST(factorial, factorial_of_0)
@@ -66,5 +69,40 @@ TEST(factorial, factorial_of_0)
     s.add_step("Given I have the number 0");
     s.add_step("When I compute its factorial");
     s.add_step("Then I see the number 1");
-    s(framework__, registry__);
+
+    unsigned long long input, result;
+    s(framework__, registry__, input, result);
+}
+
+TEST(factorial, factorial_of_1)
+{
+    okra::scenario s("Factorial of 1");
+    s.add_step("Given I have the number 1");
+    s.add_step("When I compute its factorial");
+    s.add_step("Then I see the number 1");
+
+    unsigned long long input, result;
+    s(framework__, registry__, input, result);
+}
+
+TEST(factorial, factorial_of_2)
+{
+    okra::scenario s("Factorial of 2");
+    s.add_step("Given I have the number 2");
+    s.add_step("When I compute its factorial");
+    s.add_step("Then I see the number 2");
+
+    unsigned long long input, result;
+    s(framework__, registry__, input, result);
+}
+
+TEST(factorial, factorial_of_3)
+{
+    okra::scenario s("Factorial of 3");
+    s.add_step("Given I have the number 3");
+    s.add_step("When I compute its factorial");
+    s.add_step("Then I see the number 6");
+
+    unsigned long long input, result;
+    s(framework__, registry__, input, result);
 }
