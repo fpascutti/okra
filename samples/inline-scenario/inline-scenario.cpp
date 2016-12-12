@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <gtest/gtest.h>
+#include <okra/ignore.h>
 #include <okra/impl.h>
 #include <okra/re.h>
 #include <okra/scenario.h>
@@ -58,7 +59,7 @@ unsigned long long factorial(unsigned long long)
     return 1ull;
 }
 
-auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), [](framework&, unsigned long long& input, unsigned long long, const std::string& arg) { input = std::stoull(arg); })
+auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), [](framework&, unsigned long long& input, okra::ignore, const std::string& arg) { input = std::stoull(arg); })
                 | okra::impl(okra::re::regex("When I compute its factorial"), [](framework&, unsigned long long input, unsigned long long& result) { result = factorial(input); })
                 | okra::impl(okra::re::regex("Then I see the number (\\d+)"), [](framework&, unsigned long long input, unsigned long long result, const std::string& arg) { auto exp = std::stoull(arg); ASSERT_EQ(exp, result) << "Invalid factorial computed for '" << input << "'."; });
 }
