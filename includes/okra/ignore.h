@@ -15,7 +15,6 @@ public:
     { }
 };
 
-
 }
 
 #endif // OKRA_IGNORE_H
