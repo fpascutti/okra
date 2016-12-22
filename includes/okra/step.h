@@ -19,13 +19,25 @@ private:
     typedef std::basic_string<Char, Traits> string_type;
 
 public:
-    basic_step(string_type text)
-        : text_(std::move(text))
+    basic_step(string_type text, std::string file, int line)
+        : text_(std::move(text)),
+          file_(std::move(file)),
+          line_(line)
     { }
 
     const string_type& text() const OKRA_NOEXCEPT
     {
         return text_;
+    }
+
+    const std::string& file() const OKRA_NOEXCEPT
+    {
+        return file_;
+    }
+
+    int line() const OKRA_NOEXCEPT
+    {
+        return line_;
     }
 
     template<typename Framework, typename Registry, typename... Args>
@@ -63,6 +75,8 @@ private:
 
 private:
     string_type text_;
+    std::string file_;
+    int line_;
 };
 
 typedef basic_step<char> step;

@@ -35,7 +35,7 @@ public:
     }
     void before_step(const okra::step& s)
     {
-        current_step_ = make_scoped_trace(__FILE__, __LINE__, s.text().c_str());
+        current_step_ = make_scoped_trace(s.file().c_str(), s.line(), s.text().c_str());
     }
     void after_step(const okra::step&)
     {
@@ -67,9 +67,9 @@ auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), 
 TEST(factorial, factorial_of_0)
 {
     okra::scenario s("Factorial of 0", __FILE__, __LINE__);
-    s.add_step("Given I have the number 0");
-    s.add_step("When I compute its factorial");
-    s.add_step("Then I see the number 1");
+    s.add_step("Given I have the number 0", __FILE__, __LINE__);
+    s.add_step("When I compute its factorial", __FILE__, __LINE__);
+    s.add_step("Then I see the number 1", __FILE__, __LINE__);
 
     unsigned long long input, result;
     s(framework__, registry__, input, result);
@@ -78,9 +78,9 @@ TEST(factorial, factorial_of_0)
 TEST(factorial, factorial_of_1)
 {
     okra::scenario s("Factorial of 1", __FILE__, __LINE__);
-    s.add_step("Given I have the number 1");
-    s.add_step("When I compute its factorial");
-    s.add_step("Then I see the number 1");
+    s.add_step("Given I have the number 1", __FILE__, __LINE__);
+    s.add_step("When I compute its factorial", __FILE__, __LINE__);
+    s.add_step("Then I see the number 1", __FILE__, __LINE__);
 
     unsigned long long input, result;
     s(framework__, registry__, input, result);
@@ -89,9 +89,9 @@ TEST(factorial, factorial_of_1)
 TEST(factorial, factorial_of_2)
 {
     okra::scenario s("Factorial of 2", __FILE__, __LINE__);
-    s.add_step("Given I have the number 2");
-    s.add_step("When I compute its factorial");
-    s.add_step("Then I see the number 2");
+    s.add_step("Given I have the number 2", __FILE__, __LINE__);
+    s.add_step("When I compute its factorial", __FILE__, __LINE__);
+    s.add_step("Then I see the number 2", __FILE__, __LINE__);
 
     unsigned long long input, result;
     s(framework__, registry__, input, result);
@@ -100,9 +100,9 @@ TEST(factorial, factorial_of_2)
 TEST(factorial, factorial_of_3)
 {
     okra::scenario s("Factorial of 3", __FILE__, __LINE__);
-    s.add_step("Given I have the number 3");
-    s.add_step("When I compute its factorial");
-    s.add_step("Then I see the number 6");
+    s.add_step("Given I have the number 3", __FILE__, __LINE__);
+    s.add_step("When I compute its factorial", __FILE__, __LINE__);
+    s.add_step("Then I see the number 6", __FILE__, __LINE__);
 
     unsigned long long input, result;
     s(framework__, registry__, input, result);

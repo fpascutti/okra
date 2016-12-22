@@ -68,9 +68,9 @@ TEST(scenario, no_steps)
 TEST(scenario, multiple_steps)
 {
     okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
-    s.add_step("Given I wake up");
-    s.add_step("When I take a shower");
-    s.add_step("Then I feel better");
+    s.add_step("Given I wake up", __FILE__, __LINE__);
+    s.add_step("When I take a shower", __FILE__, __LINE__);
+    s.add_step("Then I feel better", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -89,9 +89,9 @@ TEST(scenario, multiple_steps)
 TEST(scenario, multiple_steps_failure)
 {
     okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
-    s.add_step("Given I wake up");
-    s.add_step("When I take a shower");
-    s.add_step("Then I feel better");
+    s.add_step("Given I wake up", __FILE__, __LINE__);
+    s.add_step("When I take a shower", __FILE__, __LINE__);
+    s.add_step("Then I feel better", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -110,9 +110,9 @@ TEST(scenario, multiple_steps_failure)
 TEST(scenario, exception_in_before_scenario)
 {
     okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
-    s.add_step("Given I wake up");
-    s.add_step("When I take a shower");
-    s.add_step("Then I feel better");
+    s.add_step("Given I wake up", __FILE__, __LINE__);
+    s.add_step("When I take a shower", __FILE__, __LINE__);
+    s.add_step("Then I feel better", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -128,9 +128,9 @@ TEST(scenario, exception_in_before_scenario)
 TEST(scenario, exception_when_invoking_step)
 {
     okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
-    s.add_step("Given I wake up");
-    s.add_step("When I take a shower");
-    s.add_step("Then I feel better");
+    s.add_step("Given I wake up", __FILE__, __LINE__);
+    s.add_step("When I take a shower", __FILE__, __LINE__);
+    s.add_step("Then I feel better", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -151,9 +151,9 @@ TEST(scenario, exception_in_after_scenario)
     // If test fails to die then it probably means that an expectation is incorrect
     ASSERT_DEATH({
         okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
-        s.add_step("Given I wake up");
-        s.add_step("When I take a shower");
-        s.add_step("Then I feel better");
+        s.add_step("Given I wake up", __FILE__, __LINE__);
+        s.add_step("When I take a shower", __FILE__, __LINE__);
+        s.add_step("Then I feel better", __FILE__, __LINE__);
 
         testing::NiceMock<framework_mock> fw;
         testing::NiceMock<registry_mock> reg;

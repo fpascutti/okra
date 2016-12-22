@@ -29,19 +29,23 @@ struct registry_mock
 
 TEST(step, narrow_constructor)
 {
-    okra::step s("Given I wake up");
+    okra::step s("Given I wake up", "__FILE__", 42);
     ASSERT_STREQ("Given I wake up", s.text().c_str()) << "'step' constructor did not properly set its text.";
+    ASSERT_STREQ("__FILE__", s.file().c_str()) << "'step' constructor did not properly set its file.";
+    ASSERT_EQ(42, s.line()) << "'step' constructor did not properly set its line.";
 }
 
 TEST(step, wide_constructor)
 {
-    okra::wstep s(L"Given I wake up");
+    okra::wstep s(L"Given I wake up", "__FILE__", 42);
     ASSERT_STREQ(L"Given I wake up", s.text().c_str()) << "'step' constructor did not properly set its text.";
+    ASSERT_STREQ("__FILE__", s.file().c_str()) << "'step' constructor did not properly set its file.";
+    ASSERT_EQ(42, s.line()) << "'step' constructor did not properly set its line.";
 }
 
 TEST(step, success)
 {
-    okra::step s("Given I wake up");
+    okra::step s("Given I wake up", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -56,7 +60,7 @@ TEST(step, success)
 
 TEST(step, undefined_step)
 {
-    okra::step s("Given I wake up");
+    okra::step s("Given I wake up", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -70,7 +74,7 @@ TEST(step, undefined_step)
 
 TEST(step, exception_in_before_step)
 {
-    okra::step s("Given I wake up");
+    okra::step s("Given I wake up", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -88,7 +92,7 @@ TEST(step, exception_in_after_step)
     // so that mocks expectations can be set/used (as far as possible - i.e. mock destructor is not called).
     // If test fails to die then it probably means that an expectation is incorrect
     ASSERT_DEATH({
-        okra::step s("Given I wake up");
+        okra::step s("Given I wake up", __FILE__, __LINE__);
 
         testing::NiceMock<framework_mock> fw;
         testing::NiceMock<registry_mock> reg;
