@@ -37,6 +37,7 @@ okra_library(okra
     includes/okra/detail/implementation.h
     includes/okra/detail/invoke.h
     includes/okra/detail/typed_registry.h
+    includes/okra/googletest/framework.h
     includes/okra/compiler_detection.h
     includes/okra/config.h
     includes/okra/ignore.h

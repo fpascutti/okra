@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <gtest/gtest.h>
+#include <okra/googletest/framework.h>
 #include <okra/ignore.h>
 #include <okra/impl.h>
 #include <okra/re.h>
@@ -13,55 +14,15 @@
 
 namespace {
 
-class framework
-{
-public:
-    bool has_failed() const { return testing::Test::HasFatalFailure(); }
-
-public:
-    void undefined_step(const okra::step& s)
-    {
-        FAIL() << "No implementation found for step '" << s.text() << "'.";
-    }
-
-public:
-    void before_scenario(const okra::scenario& s)
-    {
-        current_scenario_ = make_scoped_trace(s.file().c_str(), s.line(), s.name().c_str());
-    }
-    void after_scenario(const okra::scenario&)
-    {
-        current_scenario_.reset();
-    }
-    void before_step(const okra::step& s)
-    {
-        current_step_ = make_scoped_trace(s.file().c_str(), s.line(), s.text().c_str());
-    }
-    void after_step(const okra::step&)
-    {
-        current_step_.reset();
-    }
-
-private:
-    static std::unique_ptr<testing::internal::ScopedTrace> make_scoped_trace(const char* file, int line, const char* msg)
-    {
-        return std::unique_ptr<testing::internal::ScopedTrace>(new testing::internal::ScopedTrace(file, line, testing::Message() << msg));
-    }
-
-private:
-    std::unique_ptr<testing::internal::ScopedTrace> current_scenario_;
-    std::unique_ptr<testing::internal::ScopedTrace> current_step_;
-};
-framework framework__;
-
 unsigned long long factorial(unsigned long long)
 {
     return 1ull;
 }
 
-auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), [](framework&, unsigned long long& input, okra::ignore, const std::string& arg) { input = std::stoull(arg); })
-                | okra::impl(okra::re::regex("When I compute its factorial"), [](framework&, unsigned long long input, unsigned long long& result) { result = factorial(input); })
-                | okra::impl(okra::re::regex("Then I see the number (\\d+)"), [](framework&, unsigned long long input, unsigned long long result, const std::string& arg) { auto exp = std::stoull(arg); ASSERT_EQ(exp, result) << "Invalid factorial computed for '" << input << "'."; });
+okra::googletest::framework framework__;
+auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), [](okra::ignore, unsigned long long& input, okra::ignore, const std::string& arg) { input = std::stoull(arg); })
+                | okra::impl(okra::re::regex("When I compute its factorial"), [](okra::ignore, unsigned long long input, unsigned long long& result) { result = factorial(input); })
+                | okra::impl(okra::re::regex("Then I see the number (\\d+)"), [](okra::ignore, unsigned long long input, unsigned long long result, const std::string& arg) { auto exp = std::stoull(arg); ASSERT_EQ(exp, result) << "Invalid factorial computed for '" << input << "'."; });
 }
 
 TEST(factorial, factorial_of_0)
@@ -107,3 +68,15 @@ TEST(factorial, factorial_of_3)
     unsigned long long input, result;
     s(framework__, registry__, input, result);
 }
+
+TEST(factorial, square_of_4)
+{
+    okra::scenario s("Square of 4", __FILE__, __LINE__);
+    s.add_step("Given I have the number 4", __FILE__, __LINE__);
+    s.add_step("When I compute its square", __FILE__, __LINE__);
+    s.add_step("Then I see the number 16", __FILE__, __LINE__);
+
+    unsigned long long input, result;
+    s(framework__, registry__, input, result);
+}
+
