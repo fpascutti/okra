@@ -21,8 +21,10 @@ private:
     typedef basic_step<Char, Traits> step_type;
 
 public:
-    basic_scenario(string_type name)
+    basic_scenario(string_type name, std::string file, int line)
         : name_(std::move(name)),
+		  file_(std::move(file)),
+		  line_(line),
           steps_()
     { }
 
@@ -51,6 +53,16 @@ public:
     {
         return name_;
     }
+
+	const std::string& file() const OKRA_NOEXCEPT
+	{
+		return file_;
+	}
+
+	int line() const OKRA_NOEXCEPT
+	{
+		return line_;
+	}
 
     template<typename Framework, typename Registry, typename... Args>
     void operator()(Framework& fw, const Registry& reg, Args&&... args) const
@@ -92,6 +104,8 @@ private:
 
 private:
     string_type name_;
+	std::string file_;
+	int line_;
     std::vector<step_type> steps_;
 };
 

@@ -35,19 +35,23 @@ struct registry_mock
 
 TEST(scenario, narrow_constructor)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", "__FILE__", 42);
     ASSERT_STREQ("I should have a perfect day", s.name().c_str()) << "'scenario' constructor did not properly set its name.";
+	ASSERT_STREQ("__FILE__", s.file().c_str()) << "'scenario' constructor did not properly set its file.";
+	ASSERT_EQ(42, s.line()) << "'scenario' constructor did not properly set its line.";
 }
 
 TEST(scenario, wide_constructor)
 {
-    okra::wscenario s(L"I should have a perfect day");
+    okra::wscenario s(L"I should have a perfect day", "__FILE__", 42);
     ASSERT_STREQ(L"I should have a perfect day", s.name().c_str()) << "'scenario' constructor did not properly set its name.";
+	ASSERT_STREQ("__FILE__", s.file().c_str()) << "'scenario' constructor did not properly set its file.";
+	ASSERT_EQ(42, s.line()) << "'scenario' constructor did not properly set its line.";
 }
 
 TEST(scenario, no_steps)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
 
     testing::NiceMock<framework_mock> fw;
     testing::NiceMock<registry_mock> reg;
@@ -63,7 +67,7 @@ TEST(scenario, no_steps)
 
 TEST(scenario, multiple_steps)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
     s.add_step("Given I wake up");
     s.add_step("When I take a shower");
     s.add_step("Then I feel better");
@@ -84,7 +88,7 @@ TEST(scenario, multiple_steps)
 
 TEST(scenario, multiple_steps_failure)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
     s.add_step("Given I wake up");
     s.add_step("When I take a shower");
     s.add_step("Then I feel better");
@@ -105,7 +109,7 @@ TEST(scenario, multiple_steps_failure)
 
 TEST(scenario, exception_in_before_scenario)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
     s.add_step("Given I wake up");
     s.add_step("When I take a shower");
     s.add_step("Then I feel better");
@@ -123,7 +127,7 @@ TEST(scenario, exception_in_before_scenario)
 
 TEST(scenario, exception_when_invoking_step)
 {
-    okra::scenario s("I should have a perfect day");
+    okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
     s.add_step("Given I wake up");
     s.add_step("When I take a shower");
     s.add_step("Then I feel better");
@@ -146,7 +150,7 @@ TEST(scenario, exception_in_after_scenario)
     // so that mocks expectations can be set/used (as far as possible - i.e. mock destructor is not called).
     // If test fails to die then it probably means that an expectation is incorrect
     ASSERT_DEATH({
-        okra::scenario s("I should have a perfect day");
+        okra::scenario s("I should have a perfect day", __FILE__, __LINE__);
         s.add_step("Given I wake up");
         s.add_step("When I take a shower");
         s.add_step("Then I feel better");

@@ -27,7 +27,7 @@ public:
 public:
     void before_scenario(const okra::scenario& s)
     {
-        current_scenario_ = make_scoped_trace(__FILE__, __LINE__, s.name().c_str());
+        current_scenario_ = make_scoped_trace(s.file().c_str(), s.line(), s.name().c_str());
     }
     void after_scenario(const okra::scenario&)
     {
@@ -66,7 +66,7 @@ auto registry__ = okra::impl(okra::re::regex("Given I have the number (\\d+)"), 
 
 TEST(factorial, factorial_of_0)
 {
-    okra::scenario s("Factorial of 0");
+    okra::scenario s("Factorial of 0", __FILE__, __LINE__);
     s.add_step("Given I have the number 0");
     s.add_step("When I compute its factorial");
     s.add_step("Then I see the number 1");
@@ -77,7 +77,7 @@ TEST(factorial, factorial_of_0)
 
 TEST(factorial, factorial_of_1)
 {
-    okra::scenario s("Factorial of 1");
+    okra::scenario s("Factorial of 1", __FILE__, __LINE__);
     s.add_step("Given I have the number 1");
     s.add_step("When I compute its factorial");
     s.add_step("Then I see the number 1");
@@ -88,7 +88,7 @@ TEST(factorial, factorial_of_1)
 
 TEST(factorial, factorial_of_2)
 {
-    okra::scenario s("Factorial of 2");
+    okra::scenario s("Factorial of 2", __FILE__, __LINE__);
     s.add_step("Given I have the number 2");
     s.add_step("When I compute its factorial");
     s.add_step("Then I see the number 2");
@@ -99,7 +99,7 @@ TEST(factorial, factorial_of_2)
 
 TEST(factorial, factorial_of_3)
 {
-    okra::scenario s("Factorial of 3");
+    okra::scenario s("Factorial of 3", __FILE__, __LINE__);
     s.add_step("Given I have the number 3");
     s.add_step("When I compute its factorial");
     s.add_step("Then I see the number 6");
