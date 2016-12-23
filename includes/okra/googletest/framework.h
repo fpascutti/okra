@@ -10,6 +10,7 @@
 // This was tested only with GoogleTest 1.8.0 but *may* work with other versions.
 
 #include <memory>
+#include <string>
 #include <gtest/gtest.h>
 #include <okra/scenario.h>
 #include <okra/step.h>
@@ -25,35 +26,52 @@ public:
     }
 
 public:
-    void undefined_step(const okra::step& s)
+    template<typename Char, typename Traits>
+    void undefined_step(const okra::basic_step<Char, Traits>& s)
     {
         // No equivalent of `ADD_FAILURE_AT` exists that creates a fatal failure.
-        GTEST_MESSAGE_AT_(s.file().c_str(), s.line(), "Undefined step", testing::TestPartResult::kFatalFailure) << "No implementation found for step '" << s.text() << "'.";
+        GTEST_MESSAGE_AT_(s.file().c_str(), s.line(), "Undefined step", testing::TestPartResult::kFatalFailure) << "No implementation found for step '" << to_bytes(s.text()) << "'.";
     }
 
 public:
-    void before_scenario(const okra::scenario& s)
+    template<typename Char, typename Traits>
+    void before_scenario(const okra::basic_scenario<Char, Traits>& s)
     {
-        current_scenario_ = make_scoped_trace(s.file().c_str(), s.line(), s.name().c_str());
+        current_scenario_ = make_scoped_trace(s.file().c_str(), s.line(), s.name());
     }
-    void after_scenario(const okra::scenario&)
+    template<typename Char, typename Traits>
+    void after_scenario(const okra::basic_scenario<Char, Traits>&)
     {
         current_scenario_.reset();
     }
-    void before_step(const okra::step& s)
+    template<typename Char, typename Traits>
+    void before_step(const okra::basic_step<Char, Traits>& s)
     {
-        current_step_ = make_scoped_trace(s.file().c_str(), s.line(), s.text().c_str());
+        current_step_ = make_scoped_trace(s.file().c_str(), s.line(), s.text());
     }
-    void after_step(const okra::step&)
+    template<typename Char, typename Traits>
+    void after_step(const okra::basic_step<Char, Traits>&)
     {
         current_step_.reset();
     }
 
 private:
-    static std::unique_ptr<testing::internal::ScopedTrace> make_scoped_trace(const char* file, int line, const char* msg)
+    template<typename Char, typename Traits>
+    static std::unique_ptr<testing::internal::ScopedTrace> make_scoped_trace(const char* file, int line, const std::basic_string<Char, Traits>& msg)
     {
         // No equivalent of `SCOPED_TRACE` exists where we can specify the file name and line number.
-        return std::unique_ptr<testing::internal::ScopedTrace>(new testing::internal::ScopedTrace(file, line, testing::Message() << msg));
+        return std::unique_ptr<testing::internal::ScopedTrace>(new testing::internal::ScopedTrace(file, line, testing::Message() << to_bytes(msg)));
+    }
+
+    template<typename Traits>
+    static const std::basic_string<char, Traits>& to_bytes(const std::basic_string<char, Traits>& txt)
+    {
+        return txt;
+    }
+    template<typename Traits>
+    static std::string to_bytes(const std::basic_string<wchar_t, Traits>& txt)
+    {
+        return "<no conversion yet>";
     }
 
 private:
