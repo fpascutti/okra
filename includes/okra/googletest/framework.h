@@ -9,11 +9,10 @@
 // to do what we need.
 // This was tested only with GoogleTest 1.8.0 but *may* work with other versions.
 
-#include <locale>
 #include <memory>
 #include <string>
-#include <utility>
 #include <gtest/gtest.h>
+#include <okra/detail/wstring_convert.h>
 #include <okra/config.h>
 #include <okra/scenario.h>
 #include <okra/step.h>
@@ -67,20 +66,6 @@ private:
     }
 
 private:
-    class codecvt
-        : public std::codecvt<wchar_t, char, std::mbstate_t>
-    {
-    private:
-        typedef std::codecvt<wchar_t, char, std::mbstate_t> base_type;
-    public:
-        template<typename... Args>
-        codecvt(Args&&... args)
-            : base_type(std::forward<Args>(args)...)
-        { }
-        virtual ~codecvt() OKRA_OVERRIDE
-        { }
-    };
-
     template<typename Traits>
     static const std::basic_string<char, Traits>& to_bytes(const std::basic_string<char, Traits>& txt)
     {
@@ -89,8 +74,7 @@ private:
     template<typename Traits>
     static std::string to_bytes(const std::basic_string<wchar_t, Traits>& txt)
     {
-        std::wstring_convert<codecvt> converter;
-        return converter.to_bytes(txt.c_str());
+        return okra::detail::wstring_convert::to_bytes(txt);
     }
 
 private:

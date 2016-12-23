@@ -18,9 +18,11 @@ class OkraTests(conans.ConanFile):
 
     options = {
         "use_boost_regex": [True, False],
+        "use_boost_wstringconvert": [True, False],
     }
     default_options = (
         "use_boost_regex=False",
+        "use_boost_wstringconvert=False",
         "gtest:shared=False", # mock objects do not properly return errors with the shared version of googletest
     )
 
@@ -29,7 +31,7 @@ class OkraTests(conans.ConanFile):
     )
 
     def requirements(self):
-        if self.options.use_boost_regex:
+        if self.options.use_boost_regex or self.options.use_boost_wstringconvert:
             self.requires("Boost/1.61.0@eliaskousk/stable")
 
     def imports(self):
@@ -41,6 +43,7 @@ class OkraTests(conans.ConanFile):
 
         args = ["-DOKRA_BUILD_TESTS=ON"]
         args.append("-DOKRA_CONFIG_USEBOOSTREGEX=%s" % ("ON" if self.options.use_boost_regex else "OFF"))
+        args.append("-DOKRA_CONFIG_USEBOOSTWSTRINGCONVERT=%s" % ("ON" if self.options.use_boost_wstringconvert else "OFF"))
         if cmake.is_multi_configuration:
             args.append("-DCMAKE_CONFIGURATION_TYPES=\"%s\"" % (self.settings.build_type))
 
