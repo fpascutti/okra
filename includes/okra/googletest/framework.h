@@ -9,9 +9,12 @@
 // to do what we need.
 // This was tested only with GoogleTest 1.8.0 but *may* work with other versions.
 
+#include <locale>
 #include <memory>
 #include <string>
+#include <utility>
 #include <gtest/gtest.h>
+#include <okra/config.h>
 #include <okra/scenario.h>
 #include <okra/step.h>
 
@@ -63,6 +66,21 @@ private:
         return std::unique_ptr<testing::internal::ScopedTrace>(new testing::internal::ScopedTrace(file, line, testing::Message() << to_bytes(msg)));
     }
 
+private:
+    class codecvt
+        : public std::codecvt<wchar_t, char, std::mbstate_t>
+    {
+    private:
+        typedef std::codecvt<wchar_t, char, std::mbstate_t> base_type;
+    public:
+        template<typename... Args>
+        codecvt(Args&&... args)
+            : base_type(std::forward<Args>(args)...)
+        { }
+        virtual ~codecvt() OKRA_OVERRIDE
+        { }
+    };
+
     template<typename Traits>
     static const std::basic_string<char, Traits>& to_bytes(const std::basic_string<char, Traits>& txt)
     {
@@ -71,7 +89,8 @@ private:
     template<typename Traits>
     static std::string to_bytes(const std::basic_string<wchar_t, Traits>& txt)
     {
-        return "<no conversion yet>";
+        std::wstring_convert<codecvt> converter;
+        return converter.to_bytes(txt.c_str());
     }
 
 private:
