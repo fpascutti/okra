@@ -16,9 +16,11 @@ class Okra(conans.ConanFile):
     settings = {"os", "arch", "compiler", "build_type"}
     options = {
         "use_boost_regex": [True, False],
+        "use_boost_wstringconvert": [True, False],
     }
     default_options = (
         "use_boost_regex=False",
+        "use_boost_wstringconvert=False",
     )
 
     exports = (
@@ -28,11 +30,11 @@ class Okra(conans.ConanFile):
     )
 
     def config_options(self):
-        if not self.options.use_boost_regex:
+        if not self.options.use_boost_regex and not self.options.use_boost_wstringconvert:
             self.settings.clear()
 
     def requirements(self):
-        if self.options.use_boost_regex:
+        if self.options.use_boost_regex or self.options.use_boost_wstringconvert:
             self.requires("Boost/1.61.0@eliaskousk/stable")
 
     def build(self):
@@ -41,6 +43,7 @@ class Okra(conans.ConanFile):
         # `write_compiler_detection_header` function does not use it
         args = ["-DOKRA_BUILD_TESTS=OFF", "-DOKRA_BUILD_SAMPLES=OFF"]
         args.append("-DOKRA_CONFIG_USEBOOSTREGEX=%s" % ("ON" if self.options.use_boost_regex else "OFF"))
+        args.append("-DOKRA_CONFIG_USEBOOSTWSTRINGCONVERT=%s" % ("ON" if self.options.use_boost_wstringconvert else "OFF"))
         self.run("cmake \"%s\" %s" % (self.conanfile_directory, " ".join(args)))
 
     def package(self):
@@ -50,3 +53,5 @@ class Okra(conans.ConanFile):
     def package_info(self):
         if self.options.use_boost_regex:
             self.cpp_info.defines.append("OKRA_CONFIG_USEBOOSTREGEX=1")
+        if self.options.use_boost_wstringconvert:
+            self.cpp_info.defines.append("OKRA_CONFIG_USEBOOSTWSTRINGCONVERT=1")

@@ -25,6 +25,7 @@ okra_test(unit-tests
     unit-tests/detail/function_traits.cpp
     unit-tests/detail/invoke.cpp
     unit-tests/detail/typed_registry.cpp
+    unit-tests/detail/wstring_convert.cpp
     unit-tests/impl.cpp
     unit-tests/scenario.cpp
     unit-tests/step.cpp

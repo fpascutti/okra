@@ -10,6 +10,7 @@ option(OKRA_BUILD_TESTS "Build Okra's tests." OFF)
 option(OKRA_BUILD_SAMPLES "Build Okra's samples." OFF)
 
 option(OKRA_CONFIG_USEBOOSTREGEX "Use Boost for regular expressions." OFF)
+option(OKRA_CONFIG_USEBOOSTWSTRINGCONVERT "Use Boost for wide to byte string conversions." OFF)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -35,6 +36,15 @@ function(okra_library name)
         )
     endif()
 
+    if(OKRA_CONFIG_USEBOOSTWSTRINGCONVERT)
+        target_compile_definitions(${name}
+            INTERFACE "OKRA_CONFIG_USEBOOSTWSTRINGCONVERT=1"
+        )
+        target_link_libraries(${name}
+            INTERFACE ${CONAN_LIBS_BOOST}
+        )
+    endif()
+
 endfunction()
 
 okra_library(okra
@@ -43,6 +53,7 @@ okra_library(okra
     includes/okra/detail/implementation.h
     includes/okra/detail/invoke.h
     includes/okra/detail/typed_registry.h
+    includes/okra/detail/wstring_convert.h
     includes/okra/googletest/framework.h
     includes/okra/compiler_detection.h
     includes/okra/config.h
