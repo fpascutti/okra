@@ -6,6 +6,7 @@
 // (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <okra/detail/function_traits.h>
 #include <okra/detail/invoke.h>
@@ -22,9 +23,14 @@ private:
     typedef Fn function_type;
 
 public:
-    implementation(regex_type&& regex, function_type&& fn)
+    implementation(regex_type&& regex, typename std::remove_reference<function_type>::type&& fn)
         : re_(std::move(regex)),
           fn_(std::move(fn))
+    { }
+
+    implementation(regex_type&& regex, typename std::remove_reference<function_type>::type& fn)
+        : re_(std::move(regex)),
+          fn_(fn)
     { }
 
     template<typename... Args>

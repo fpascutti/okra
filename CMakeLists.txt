@@ -11,6 +11,9 @@ option(OKRA_BUILD_SAMPLES "Build Okra's samples." OFF)
 
 option(OKRA_CONFIG_USEBOOSTREGEX "Use Boost for regular expressions." OFF)
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 function(okra_library name)
     add_library(${name} INTERFACE)
 
@@ -19,13 +22,16 @@ function(okra_library name)
         cxx_rvalue_references
         cxx_variadic_templates
     )
-    target_include_directories(${name} INTERFACE
-        ${CMAKE_SOURCE_DIR}/includes
+    target_include_directories(${name}
+        INTERFACE ${CMAKE_SOURCE_DIR}/includes
     )
 
     if(OKRA_CONFIG_USEBOOSTREGEX)
-        target_compile_definitions(${name} INTERFACE
-            "OKRA_CONFIG_USEBOOSTREGEX=1"
+        target_compile_definitions(${name}
+            INTERFACE "OKRA_CONFIG_USEBOOSTREGEX=1"
+        )
+        target_link_libraries(${name}
+            INTERFACE ${CONAN_LIBS_BOOST}
         )
     endif()
 
