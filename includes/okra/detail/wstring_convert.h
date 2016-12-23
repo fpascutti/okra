@@ -7,7 +7,26 @@
 
 #if OKRA_CONFIG_USEBOOSTWSTRINGCONVERT
 
-#error Using Boost for wstring_convert is unsupported yet.
+#include <string>
+#include <boost/locale/encoding.hpp>
+
+namespace okra { namespace detail {
+
+class wstring_convert
+{
+public:
+    template<typename Traits>
+    static std::string to_bytes(const std::basic_string<wchar_t, Traits>& txt)
+    {
+        return boost::locale::conv::utf_to_utf<char>(txt.c_str(), txt.c_str() + txt.size());
+    }
+    static std::string to_bytes(const std::wstring& txt)
+    {
+        return boost::locale::conv::utf_to_utf<char>(txt, boost::locale::conv::stop);
+    }
+};
+
+} }
 
 #else
 

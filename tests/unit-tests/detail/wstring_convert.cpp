@@ -15,26 +15,14 @@ struct custom_char_traits : public std::char_traits<Char>
 
 }
 
-TEST(wstring_convert, standard_wstring_success)
+TEST(wstring_convert, standard_wstring)
 {
     auto res = okra::detail::wstring_convert::to_bytes(std::wstring(L"I'm Olaf and I like warm hugs!"));
     ASSERT_STREQ("I'm Olaf and I like warm hugs!", res.c_str()) << "'to_bytes' failed to convert input string.";
 }
 
-TEST(wstring_convert, custom_wstring_success)
+TEST(wstring_convert, custom_wstring)
 {
     auto res = okra::detail::wstring_convert::to_bytes(std::basic_string<wchar_t, custom_char_traits<wchar_t> >(L"I'm Olaf and I like warm hugs!"));
     ASSERT_STREQ("I'm Olaf and I like warm hugs!", res.c_str()) << "'to_bytes' failed to convert input string.";
-}
-
-TEST(wstring_convert, standard_wstring_failure)
-{
-    auto res = okra::detail::wstring_convert::to_bytes(std::wstring(L"\U0001fffe"));
-    ASSERT_STREQ("<failed conversion>", res.c_str()) << "'to_bytes' converted an invalid input string to something unexpected.";
-}
-
-TEST(wstring_convert, custom_wstring_failure)
-{
-    auto res = okra::detail::wstring_convert::to_bytes(std::basic_string<wchar_t, custom_char_traits<wchar_t> >(L"\U0001fffe"));
-    ASSERT_STREQ("<failed conversion>", res.c_str()) << "'to_bytes' converted an invalid input string to something unexpected.";
 }
