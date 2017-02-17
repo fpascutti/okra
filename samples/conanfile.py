@@ -28,6 +28,7 @@ class OkraSamples(conans.ConanFile):
 
     requires = (
         ("gtest/1.8.0@eliaskousk/stable", "private"),
+        ("catch/1.5.0@TyRoXx/stable", "private"),
     )
 
     def requirements(self):
