@@ -26,10 +26,32 @@ function(okra_wide_gtest_sample name)
     )
 endfunction()
 
+function(okra_catch_sample name)
+    add_executable(${name} ${ARGN})
+    target_sources(${name}
+        PRIVATE catch-main.cpp
+    )
+    target_link_libraries(${name}
+        PRIVATE okra
+    )
+endfunction()
+function(okra_wide_catch_sample name)
+    okra_catch_sample(${name} ${ARGN})
+    target_compile_definitions(${name}
+        PRIVATE OKRA_SAMPLES_USE_WCHAR_T
+    )
+endfunction()
+
 okra_gtest_sample(gtest-inline-scenario
     inline-scenario/gtest.cpp
 )
-
 okra_wide_gtest_sample(gtest-inline-scenario-wide
     inline-scenario/gtest.cpp
+)
+
+okra_catch_sample(catch-inline-scenario
+    inline-scenario/catch.cpp
+)
+okra_wide_catch_sample(catch-inline-scenario-wide
+    inline-scenario/catch.cpp
 )
